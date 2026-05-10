@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>GYMSystem - Register</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .form-container {
+            padding: 40px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        label .required {
+            color: #e74c3c;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 5px;
+        }
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: normal;
+            cursor: pointer;
+        }
+
+        .radio-group input {
+            width: auto;
+        }
+
+        .customer-fields, .trainer-fields {
+            transition: all 0.3s ease;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+        }
+
+        .login-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .error-msg {
+            background: #fee;
+            color: #c33;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .success-msg {
+            background: #efe;
+            color: #3c3;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+            .form-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>GYMSystem</h1>
+            <p>Create a new account</p>
+        </div>
+        <div class="form-container">
+            <div th:if="${error}" class="error-msg" th:text="${error}"></div>
+            <div th:if="${success}" class="success-msg" th:text="${success}"></div>
+            
+            <form method="post" action="/register" id="registerForm">
+                <div class="section-title">ACCOUNT INFO</div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Full Name <span class="required">*</span></label>
+                        <input type="text" name="fullName" placeholder="John Doe" required/>
+                    </div>
+                    <div class="form-group">
+                        <label>Username <span class="required">*</span></label>
+                        <input type="text" name="username" placeholder="johndoe" required/>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Email <span class="required">*</span></label>
+                        <input type="email" name="email" placeholder="john@email.com" required/>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="text" name="phone" placeholder="Optional"/>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Password <span class="required">*</span> <small>(min 6 chars)</small></label>
+                        <input type="password" name="password" id="password" minlength="6" required/>
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm Password <span class="required">*</span></label>
+                        <input type="password" name="confirmPassword" id="confirmPassword" required/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Register As <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="userType" value="CUSTOMER" checked onchange="toggleFields()"/> Customer
+                        </label>
+                        <label>
+                            <input type="radio" name="userType" value="TRAINER" onchange="toggleFields()"/> Trainer
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Customer Fields -->
+                <div id="customerFields" class="customer-fields">
+                    <div class="section-title">BODY INFO (OPTIONAL)</div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Age</label>
+                            <input type="number" name="age" placeholder="25"/>
+                        </div>
+                        <div class="form-group">
+                            <label>Weight (kg)</label>
+                            <input type="number" step="0.1" name="weight" placeholder="70"/>
+                        </div>
+                        <div class="form-group">
+                            <label>Height (cm)</label>
+                            <input type="number" name="height" placeholder="175"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Fitness Goal</label>
+                        <textarea name="fitnessGoal" rows="2" placeholder="e.g. Lose 10kg, Build muscle, Increase stamina"></textarea>
+                    </div>
+                </div>
+
+                <!-- Trainer Fields -->
+                <div id="trainerFields" class="trainer-fields" style="display: none;">
+                    <div class="section-title">PROFESSIONAL INFO</div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Specialization <span class="required">*</span></label>
+                            <select name="specialization">
+                                <option value="">Select Specialization</option>
+                                <option value="Yoga">Yoga</option>
+                                <option value="Bodybuilding">Bodybuilding</option>
+                                <option value="Cardio">Cardio</option>
+                                <option value="CrossFit">CrossFit</option>
+                                <option value="Pilates">Pilates</option>
+                                <option value="Zumba">Zumba</option>
+                                <option value="Personal Training">Personal Training</option>
+                                <option value="Nutrition">Nutrition</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Certification</label>
+                            <input type="text" name="certification" placeholder="e.g., NASM, ACE, ISSA"/>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Experience (Years)</label>
+                            <input type="number" name="experienceYears" placeholder="5" min="0"/>
+                        </div>
+                        <div class="form-group">
+                            <label>Bio / About Me</label>
+                            <textarea name="bio" rows="2" placeholder="Tell us about your training philosophy..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit">Create Account</button>
+            </form>
+            <div class="login-link">
+                Already have an account? <a href="/login">Login here</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleFields() {
+            const userType = document.querySelector('input[name="userType"]:checked').value;
+            const customerFields = document.getElementById('customerFields');
+            const trainerFields = document.getElementById('trainerFields');
+            
+            if (userType === 'CUSTOMER') {
+                customerFields.style.display = 'block';
+                trainerFields.style.display = 'none';
+                // Make trainer fields not required
+                document.querySelector('select[name="specialization"]').required = false;
+            } else {
+                customerFields.style.display = 'none';
+                trainerFields.style.display = 'block';
+                // Make trainer fields required
+                document.querySelector('select[name="specialization"]').required = true;
+            }
+        }
+        
+        // Password confirmation
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            const password = document.getElementById('password').value;
+            const confirm = document.getElementById('confirmPassword').value;
+            if (password !== confirm) {
+                e.preventDefault();
+                alert('Passwords do not match!');
+            }
+        });
+        
+        // Initialize on page load
+        toggleFields();
+    </script>
+</body>
+</html>

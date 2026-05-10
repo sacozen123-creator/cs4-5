@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>GYMSystem - Equipment Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+        }
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100%;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px 20px;
+        }
+        .sidebar h2 {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        .sidebar nav a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            margin: 8px 0;
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+        .sidebar nav a:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        .main-content {
+            margin-left: 280px;
+            padding: 30px;
+        }
+        .top-bar {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 20px;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 10px;
+            text-decoration: none;
+        }
+        .section {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1e3c72;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #2a5298;
+            display: inline-block;
+        }
+        .form-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        input, select {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+        }
+        button {
+            background: linear-gradient(135deg, #2a5298, #1e3c72);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            background: #f8f9fa;
+        }
+        .message {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>🏋️ GYMSystem</h2>
+        <nav>
+            <a href="/dashboard">📊 Dashboard</a>
+            <a href="/machines">🏋️ Equipment</a>
+            <a href="/history">📜 History</a>
+            <a href="/logout">🚪 Logout</a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <div class="top-bar">
+            <h2>Equipment Management</h2>
+            <a href="/logout" class="logout-btn">Logout</a>
+        </div>
+
+        <div th:if="${param.success}" class="message success" th:text="${param.success}"></div>
+        <div th:if="${param.error}" class="message error" th:text="${param.error}"></div>
+
+        <!-- Add Machine - Both Admin and Trainer can add -->
+        <div class="section">
+            <h3 class="section-title">➕ Add New Equipment</h3>
+            <form method="post" action="/addMachine">
+                <div class="form-row">
+                    <input type="text" name="name" placeholder="Equipment Name (e.g., Treadmill, Leg Press)" required/>
+                    <select name="type" required>
+                        <option value="">Select Type</option>
+                        <option value="CARDIO">Cardio</option>
+                        <option value="STRENGTH">Strength</option>
+                        <option value="WEIGHTS">Weights</option>
+                    </select>
+                    <button type="submit">Add Equipment</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Equipment List -->
+        <div class="section">
+            <h3 class="section-title">📋 Equipment List</h3>
+            <div th:if="${#lists.isEmpty(machines)}">
+                <p>No equipment added yet.</p>
+            </div>
+            <div th:unless="${#lists.isEmpty(machines)}">
+                </table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="m : ${machines}">
+                            <td th:text="${m.name}">-</td>
+                            <td th:text="${m.type}">-</td>
+                            <td>
+                                <span th:text="${m.status}" style="font-weight: bold;"></span>
+                            </td>
+                            <td>
+                                <form method="post" action="/updateMachineStatus" style="display: flex; gap: 5px;">
+                                    <input type="hidden" name="machineId" th:value="${m.id}"/>
+                                    <select name="status">
+                                        <option value="AVAILABLE">Available</option>
+                                        <option value="IN_USE">In Use</option>
+                                        <option value="MAINTENANCE">Maintenance</option>
+                                    </select>
+                                    <button type="submit">Update</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

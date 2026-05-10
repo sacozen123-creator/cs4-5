@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>GYMSystem - Membership</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f0f2f5;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100%;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px 20px;
+        }
+
+        .sidebar h2 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .sidebar nav a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            margin: 8px 0;
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+
+        .sidebar nav a:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            padding: 30px;
+        }
+
+        /* Header */
+        .top-bar {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .top-bar h2 {
+            color: #1e3c72;
+        }
+
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* Pricing Grid */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .pricing-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .popular {
+            border: 2px solid #ff9800;
+            position: relative;
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: #ff9800;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .plan-name {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1e3c72;
+            margin-bottom: 10px;
+        }
+
+        .price {
+            font-size: 48px;
+            font-weight: bold;
+            color: #2a5298;
+            margin: 20px 0;
+        }
+
+        .price span {
+            font-size: 18px;
+            color: #666;
+        }
+
+        .features {
+            list-style: none;
+            margin: 20px 0;
+        }
+
+        .features li {
+            padding: 10px 0;
+            color: #555;
+            border-bottom: 1px solid #eee;
+        }
+
+        .features li:before {
+            content: "✓ ";
+            color: #27ae60;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #2a5298, #1e3c72);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(42,82,152,0.3);
+        }
+
+        /* Active Membership */
+        .active-membership {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            padding: 25px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .active-membership h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .active-membership p {
+            font-size: 16px;
+            margin: 5px 0;
+        }
+
+        /* History Section */
+        .history-section {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+
+        .history-section h3 {
+            color: #1e3c72;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #2a5298;
+            display: inline-block;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: #f8f9fa;
+            color: #1e3c72;
+            font-weight: 600;
+        }
+
+        .status-active {
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .status-expired {
+            color: #e74c3c;
+        }
+
+        .message {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 80px;
+            }
+            .sidebar h2, .sidebar nav a span {
+                display: none;
+            }
+            .main-content {
+                margin-left: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>🏋️ GYMSystem</h2>
+        <nav>
+            <a href="/dashboard">📊 Dashboard</a>
+            <a href="/membership">💳 Membership</a>
+            <a href="/machines">🏋️ Equipment</a>
+            <a href="/history">📜 History</a>
+            <a href="/logout">🚪 Logout</a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <div class="top-bar">
+            <h2>Membership Plans</h2>
+            <a href="/logout" class="logout-btn">Logout</a>
+        </div>
+
+        <!-- Success/Error Messages -->
+        <div th:if="${param.success}" class="message success" th:text="${param.success}"></div>
+        <div th:if="${param.error}" class="message error" th:text="${param.error}"></div>
+
+        <!-- Active Membership Display -->
+        <div th:if="${membership != null}" class="active-membership">
+            <h3>✅ Your Active Membership</h3>
+            <p><strong>Plan:</strong> <span th:text="${membership.type}"></span></p>
+            <p><strong>Price Paid:</strong> $<span th:text="${membership.price}"></span></p>
+            <p><strong>Valid Until:</strong> <span th:text="${membership.endDate}"></span></p>
+        </div>
+
+        <div th:unless="${membership != null}" class="active-membership" style="background: linear-gradient(135deg, #e74c3c, #c0392b);">
+            <h3>⚠️ No Active Membership</h3>
+            <p>Please select a plan below to get started!</p>
+        </div>
+
+        <!-- Pricing Cards -->
+        <div class="pricing-grid">
+            <!-- BASIC Plan -->
+            <div class="pricing-card">
+                <div class="plan-name">BASIC</div>
+                <div class="price">$49.99 <span>/ month</span></div>
+                <ul class="features">
+                    <li>1 Month Access</li>
+                    <li>Basic Equipment Access</li>
+                    <li>Regular Gym Hours</li>
+                    <li>Locker Access</li>
+                    <li>Free Wi-Fi</li>
+                </ul>
+                <form method="post" action="/process-payment">
+                    <input type="hidden" name="type" value="BASIC"/>
+                    <input type="hidden" name="username" th:value="${#authentication.name}"/>
+                    <button type="submit">Activate BASIC →</button>
+                </form>
+            </div>
+
+            <!-- PREMIUM Plan -->
+            <div class="pricing-card popular">
+                <div class="popular-badge">MOST POPULAR</div>
+                <div class="plan-name">PREMIUM</div>
+                <div class="price">$129.99 <span>/ 3 months</span></div>
+                <ul class="features">
+                    <li>3 Months Access</li>
+                    <li>All Equipment Access</li>
+                    <li>Free Group Classes</li>
+                    <li>Priority Booking</li>
+                    <li>Guest Pass (1/month)</li>
+                    <li>Free Towel Service</li>
+                </ul>
+                <form method="post" action="/process-payment">
+                    <input type="hidden" name="type" value="PREMIUM"/>
+                    <input type="hidden" name="username" th:value="${#authentication.name}"/>
+                    <button type="submit">Activate PREMIUM →</button>
+                </form>
+            </div>
+
+            <!-- VIP Plan -->
+            <div class="pricing-card">
+                <div class="plan-name">VIP</div>
+                <div class="price">$499.99 <span>/ year</span></div>
+                <ul class="features">
+                    <li>12 Months Access</li>
+                    <li>Personal Trainer Included</li>
+                    <li>24/7 Gym Access</li>
+                    <li>Free Locker + Towel</li>
+                    <li>Nutrition Consultation</li>
+                    <li>Bring a Friend Free</li>
+                    <li>Priority Support</li>
+                </ul>
+                <form method="post" action="/process-payment">
+                    <input type="hidden" name="type" value="VIP"/>
+                    <input type="hidden" name="username" th:value="${#authentication.name}"/>
+                    <button type="submit">Activate VIP →</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Membership History -->
+        <div th:if="${membershipHistory != null and not #lists.isEmpty(membershipHistory)}" class="history-section">
+            <h3>📜 Your Membership History</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Plan</th>
+                        <th>Price</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="m : ${membershipHistory}">
+                        <td th:text="${m.type}">-</td>
+                        <td>$<span th:text="${m.price}"></span></td>
+                        <td th:text="${m.startDate}">-</td>
+                        <td th:text="${m.endDate}">-</td>
+                        <td>
+                            <span th:if="${m.status == 'ACTIVE'}" class="status-active">● Active</span>
+                            <span th:if="${m.status != 'ACTIVE'}" class="status-expired" th:text="${m.status}"></span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

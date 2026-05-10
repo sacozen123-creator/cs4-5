@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>GYMSystem - Customers</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+        }
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 260px;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+        }
+        .sidebar h2 {
+            margin-bottom: 30px;
+        }
+        .sidebar nav a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 12px 15px;
+            margin: 5px 0;
+            border-radius: 10px;
+        }
+        .sidebar nav a:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        .main-content {
+            margin-left: 260px;
+            padding: 20px;
+        }
+        .top-bar {
+            background: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            background: #f8f9fa;
+        }
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>GYMSystem</h2>
+        <nav>
+            <a href="/dashboard">📊 Dashboard</a>
+            <a href="/membership">💳 Membership</a>
+            <a href="/machines">🏋️ Equipment</a>
+            <a href="/history">📜 History</a>
+            <a href="/customers">👥 Customers</a>
+            <a href="/trainers">👨‍🏫 Trainers</a>
+            <a href="/logout">🚪 Logout</a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <div class="top-bar">
+            <h2>All Customers</h2>
+            <a href="/logout" class="logout-btn">Logout</a>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Customer List</div>
+            <div th:if="${#lists.isEmpty(customers)}">
+                <p>No customers registered yet.</p>
+            </div>
+            <div th:unless="${#lists.isEmpty(customers)}">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Age</th>
+                            <th>Joined Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="c : ${customers}">
+                            <td th:text="${c.fullName}"></td>
+                            <td th:text="${c.username}"></td>
+                            <td th:text="${c.email}"></td>
+                            <td th:text="${c.age}"></td>
+                            <td th:text="${c.joinedDate}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

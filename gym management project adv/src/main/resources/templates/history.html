@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Transaction History - Gym</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: linear-gradient(135deg, #1e1e2f, #2b5876);
+            color: white;
+            text-align: center;
+        }
+        table {
+            margin: 20px auto;
+            width: 85%;
+            border-collapse: collapse;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+        }
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        th {
+            background: rgba(255,165,0,0.3);
+        }
+        .nav a {
+            color: white;
+            margin: 0 10px;
+        }
+        .card {
+            background: rgba(255,255,255,0.1);
+            margin: 20px auto;
+            padding: 20px;
+            width: 350px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="nav">
+    <a href="/dashboard">Dashboard</a> |
+    <a href="/membership">Membership</a> |
+    <a href="/machines">Equipment</a> |
+    <a href="/logout">Logout</a>
+</div>
+
+<h1>Transaction History</h1>
+
+<div class="card" th:if="${#lists.isEmpty(transactions)}">
+    <p>No transactions yet.</p>
+</div>
+
+<div th:unless="${#lists.isEmpty(transactions)}">
+    <table>
+        <thead>
+            <tr>
+                <th>Date & Time</th>
+                <th th:if="${isAdmin}">User</th>
+                <th>Action</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="t : ${transactions}">
+                <td th:text="${t.timestamp}"></td>
+                <td th:if="${isAdmin}" th:text="${t.username}"></td>
+                <td>
+                    <span th:class="${t.action == 'LOGIN' ? 'green' : (t.action == 'BOOK_SESSION' ? 'orange' : 'white')}"
+                          th:text="${t.action}"></span>
+                </td>
+                <td th:text="${t.details}"></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

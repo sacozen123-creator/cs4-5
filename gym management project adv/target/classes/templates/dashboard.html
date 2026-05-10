@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>GYMSystem - Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f0f2f5;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100%;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px 20px;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+        }
+
+        .sidebar h2 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 40px;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        .sidebar nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            margin: 8px 0;
+            border-radius: 12px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .sidebar nav a:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateX(5px);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            padding: 30px;
+        }
+
+        /* Header */
+        .top-bar {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .welcome h3 {
+            font-size: 24px;
+            color: #1e3c72;
+            font-weight: 600;
+        }
+
+        .welcome p {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231,76,60,0.3);
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+            border-left: 5px solid;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h3 {
+            color: #666;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-card .number {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1e3c72;
+        }
+
+        /* Sections */
+        .section {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1e3c72;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #2a5298;
+            display: inline-block;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        input, select {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #2a5298;
+        }
+
+        button {
+            background: linear-gradient(135deg, #2a5298, #1e3c72);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(42,82,152,0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        th {
+            background: #f8f9fa;
+            color: #1e3c72;
+            font-weight: 600;
+        }
+
+        .cancel-btn, .delete-btn {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            padding: 6px 15px;
+            font-size: 12px;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39,174,96,0.3);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-admin {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .badge-trainer {
+            background: #3498db;
+            color: white;
+        }
+
+        .badge-customer {
+            background: #27ae60;
+            color: white;
+        }
+
+        .message {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 80px;
+            }
+            .sidebar h2, .sidebar nav a span {
+                display: none;
+            }
+            .main-content {
+                margin-left: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>🏋️ GYMSystem</h2>
+        <nav>
+            <a href="/dashboard">📊 <span>Dashboard</span></a>
+            <a th:if="${not isAdmin and not isTrainer}" href="/membership">💳 <span>Membership</span></a>
+            <a th:if="${isTrainer or isAdmin}" href="/machines">🏋️ <span>Equipment</span></a>
+            <a href="/history">📜 <span>History</span></a>
+            <a th:if="${isAdmin}" href="/customers">👥 <span>Customers</span></a>
+            <a th:if="${isAdmin}" href="/trainers">👨‍🏫 <span>Trainers</span></a>
+            <a href="/logout">🚪 <span>Logout</span></a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <div class="top-bar">
+            <div class="welcome">
+                <h3>Welcome back, <span th:text="${user}"></span>!</h3>
+                <p th:if="${isAdmin}">👑 Admin Dashboard - You have full control</p>
+                <p th:if="${isTrainer and not isAdmin}">🏋️ Trainer Dashboard - Manage your sessions</p>
+                <p th:if="${not isAdmin and not isTrainer}">💪 Customer Dashboard - Book sessions & track progress</p>
+            </div>
+            <div>
+                <span class="badge" th:class="${isAdmin ? 'badge-admin' : (isTrainer ? 'badge-trainer' : 'badge-customer')}" 
+                      th:text="${isAdmin ? 'ADMIN' : (isTrainer ? 'TRAINER' : 'CUSTOMER')}"></span>
+                <a href="/logout" class="logout-btn" style="margin-left: 15px;">Logout</a>
+            </div>
+        </div>
+
+        <!-- Messages -->
+        <div th:if="${param.success}" class="message success" th:text="${param.success}"></div>
+        <div th:if="${param.error}" class="message error" th:text="${param.error}"></div>
+
+        <!-- ADMIN SECTION -->
+        <div th:if="${isAdmin}">
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card" style="border-left-color: #3498db;">
+                    <h3>Total Members</h3>
+                    <div class="number" th:text="${totalMembers}">0</div>
+                </div>
+                <div class="stat-card" style="border-left-color: #e74c3c;">
+                    <h3>Total Sessions</h3>
+                    <div class="number" th:text="${totalSessions}">0</div>
+                </div>
+                <div class="stat-card" style="border-left-color: #27ae60;">
+                    <h3>Total Bookings</h3>
+                    <div class="number" th:text="${totalBookings}">0</div>
+                </div>
+                <div class="stat-card" style="border-left-color: #f39c12;">
+                    <h3>Active Trainers</h3>
+                    <div class="number" th:text="${totalTrainers}">0</div>
+                </div>
+            </div>
+
+            <!-- Add Session -->
+            <div class="section">
+                <h3 class="section-title">➕ Create New Session</h3>
+                <form method="post" action="/addSession">
+                    <div class="form-row">
+                        <input type="text" name="name" placeholder="Session Name (e.g., Morning Yoga)" required/>
+                        <input type="text" name="trainer" placeholder="Trainer Name" required/>
+                        <button type="submit">Create Session</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Recent Members -->
+            <div class="section">
+                <h3 class="section-title">📊 Recent Members</h3>
+                <div th:if="${#lists.isEmpty(recentMembers)}" class="empty-state">
+                    No members yet
+                </div>
+                <div th:unless="${#lists.isEmpty(recentMembers)}">
+                    <table>
+                        <thead>
+                            <tr><th>Full Name</th><th>Email</th><th>Joined Date</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="member : ${recentMembers}">
+                                <td th:text="${member.fullName}">-</td>
+                                <td th:text="${member.email}">-</td>
+                                <td th:text="${member.joinedDate}">-</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Assign Trainer -->
+            <div class="section">
+                <h3 class="section-title">👥 Assign Trainer to Customer</h3>
+                <form method="post" action="/assignTrainer">
+                    <div class="form-row">
+                        <select name="customerId" required>
+                            <option value="">Select Customer</option>
+                            <option th:each="c : ${customers}" th:value="${c.id}" th:text="${c.fullName}"></option>
+                        </select>
+                        <select name="trainerId" required>
+                            <option value="">Select Trainer</option>
+                            <option th:each="t : ${trainers}" th:value="${t.id}" th:text="${t.fullName}"></option>
+                        </select>
+                        <button type="submit">Assign</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- TRAINER SECTION -->
+        <div th:if="${isTrainer and not isAdmin}">
+            <!-- Create Session -->
+            <div class="section">
+                <h3 class="section-title">➕ Create Your Session</h3>
+                <form method="post" action="/trainer/addSession">
+                    <div class="form-row">
+                        <input type="text" name="name" placeholder="Session Name (e.g., Morning Yoga)" required/>
+                        <button type="submit">Create Session</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- My Sessions -->
+            <div class="section">
+                <h3 class="section-title">🏋️ My Sessions</h3>
+                <div th:if="${#lists.isEmpty(mySessions)}" class="empty-state">
+                    You haven't created any sessions yet
+                </div>
+                <div th:unless="${#lists.isEmpty(mySessions)}">
+                    <table>
+                        <thead><tr><th>Session Name</th><th>Action</th></tr></thead>
+                        <tbody>
+                            <tr th:each="s : ${mySessions}">
+                                <td th:text="${s.name}">-</td>
+                                <td>
+                                    <form method="post" action="/trainer/deleteSession" style="display:inline;">
+                                        <input type="hidden" name="sessionId" th:value="${s.id}"/>
+                                        <button type="submit" class="delete-btn">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Customer Bookings -->
+            <div class="section">
+                <h3 class="section-title">📅 Customer Bookings</h3>
+                <div th:if="${#lists.isEmpty(trainerBookings)}" class="empty-state">
+                    No customers have booked your sessions yet
+                </div>
+                <div th:unless="${#lists.isEmpty(trainerBookings)}">
+                    <table>
+                        <thead><tr><th>Customer</th><th>Session</th></tr></thead>
+                        <tbody>
+                            <tr th:each="b : ${trainerBookings}">
+                                <td th:text="${b.username}">-</td>
+                                <td th:text="${b.session}">-</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+		<!-- Trainer Notifications - Add this to trainer section -->
+		<div th:if="${isTrainer and not isAdmin}" class="section">
+		    <h3 class="section-title">🔔 Notifications</h3>
+		    <div th:if="${#lists.isEmpty(notifications)}" class="empty-state">
+		        No new notifications
+		    </div>
+		    <div th:unless="${#lists.isEmpty(notifications)}">
+		        <ul style="list-style: none;">
+		            <li th:each="n : ${notifications}" style="background: #e8f4fd; padding: 12px; margin: 8px 0; border-radius: 8px; border-left: 4px solid #3498db;">
+		                <span th:text="${n}"></span>
+		            </li>
+		        </ul>
+		    </div>
+		</div>
+        <!--  CUSTOMER SECTION  -->
+        <div th:if="${not isAdmin and not isTrainer}">
+            <!-- Book Session -->
+            <div class="section">
+                <h3 class="section-title">📅 Book a Session</h3>
+                <form method="post" action="/book">
+                    <div class="form-row">
+                        <select name="sessionTrainer" required>
+                            <option value="">Select a session</option>
+                            <option th:each="s : ${availableSessions}" th:value="${s.name + '|' + s.trainer}" th:text="${s.name + ' - Trainer: ' + s.trainer}"></option>
+                        </select>
+                        <button type="submit">Book Now</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- My Bookings -->
+            <div class="section">
+                <h3 class="section-title">📋 My Bookings</h3>
+                <div th:if="${#lists.isEmpty(bookings)}" class="empty-state">
+                    No bookings yet. Book a session above!
+                </div>
+                <div th:unless="${#lists.isEmpty(bookings)}">
+                    <table>
+                        <thead><tr><th>Session</th><th>Trainer</th><th>Action</th></tr></thead>
+                        <tbody>
+                            <tr th:each="b : ${bookings}">
+                                <td th:text="${b.session}">-</td>
+                                <td th:text="${b.trainer}">-</td>
+                                <td>
+                                    <form method="post" action="/deleteBooking" style="display:inline;">
+                                        <input type="hidden" name="id" th:value="${b.id}"/>
+                                        <button type="submit" class="cancel-btn">Cancel</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Membership -->
+            <div class="section">
+                <h3 class="section-title">💳 My Membership</h3>
+                <div th:if="${membership != null}">
+                    <p style="margin-bottom: 10px;"><strong>Current Plan:</strong> <span th:text="${membership.type}" style="color: #27ae60; font-weight: 700;"></span></p>
+                    <p style="margin-bottom: 20px;"><strong>Valid Until:</strong> <span th:text="${membership.endDate}"></span></p>
+                    <a href="/membership" class="action-btn">Upgrade Plan →</a>
+                </div>
+                <div th:unless="${membership != null}" class="empty-state">
+                    No active membership. <a href="/membership" style="color: #2a5298;">Click here to purchase</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
